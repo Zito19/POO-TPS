@@ -8,9 +8,20 @@ import java.time.LocalDate;
 
 public class AdministradorDeTareas {
     private Tarea3 tarea;
-    private ListaEnlazada noVencidas = new ListaEnlazada();
+    private static AdministradorDeTareas instancia;
+    private ListaEnlazada lista;
+    private ListaEnlazada noVencidas;
+    private AdministradorDeTareas() {
+        lista = new ListaEnlazada();
+        noVencidas = new ListaEnlazada();
+    }
 
-    private ListaEnlazada lista = new ListaEnlazada();
+    public static AdministradorDeTareas getInstance() {
+        if (instancia == null) {
+            instancia = new AdministradorDeTareas();
+        }
+        return instancia;
+    }
 
     public void crearTarea(String titulo, String descripcion, int prioridad, LocalDate recordatorio, LocalDate fechaLimite) {
         tarea = new Tarea3(titulo, descripcion, prioridad, recordatorio, fechaLimite);
@@ -19,7 +30,7 @@ public class AdministradorDeTareas {
 
 
     //METODOS.
-    private void mostrarTareas(ListaEnlazada lista) {
+    public void mostrarTareas(ListaEnlazada lista) {
         if (lista.longitud() == 0) {
             System.out.println("lista vacia");
         }
@@ -38,16 +49,27 @@ public class AdministradorDeTareas {
         mostrarTareas(noVencidas);
     }
     //BUSCA UNA TAREA POR TITULO
-    public void buscarTareaPorTitulo(String titulo) {
+    public Tarea3 tareaPorTitulo(String titulo) {
         for (int i = 1; i <= noVencidas.longitud(); i++) {
             Tarea3 tarea = (Tarea3) noVencidas.recuperar(i);
             if (tarea.getTitulo().equals(titulo)) {
-                System.out.println("TITULO ENCONTRADO");
-                tarea.tareaInfo(); // muestra la tarea
-                return;
+
+                 // tarea
+                return tarea;
             }
         }
-        System.out.println("TITULO NO ENCONTRADO");
+        return null;
+
+    }
+    public boolean buscarTareaPorTitulo(String titulo) {
+        Tarea3 tarea = tareaPorTitulo(titulo);
+        if (tarea == null) {
+            System.out.println("TITULO NO ENCONTRADO");
+            return true;
+        }
+        System.out.println("TITULO ENCONTRADO");
+        tarea.tareaInfo();
+        return false;
     }
     // MARCA COMO COMPLETA UNA TAREA.
     public boolean realizarTareaPorTitulo(String titulo) {
@@ -91,6 +113,15 @@ public class AdministradorDeTareas {
             noVencidas.reemplazar(pos, aux);
         }
     }
+    //ej 13
 
+    public Tarea3 tareaColaborador(String tarea) {
+        Tarea3 realizada = tareaPorTitulo(tarea);
+        if (realizada != null) {
+            realizarTareaPorTitulo(tarea);
+            realizada.fechaFinalizacion = LocalDate.now();
+            return realizada;
+        }
+    return null;
+    }
 }
-

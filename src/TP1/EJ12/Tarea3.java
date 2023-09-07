@@ -12,12 +12,15 @@ public class Tarea3 {
     protected LocalDate fechaLimite;
     protected LocalDate fechaCompletada;
     private LocalDate fechaRecordatorio;
+    protected LocalDate fechaFinalizacion;
     protected Tarea.Estado estado;
-    public enum Estado{
-        incompleta,completa,vencida,porVencer;
+
+    public enum Estado {
+        incompleta, completa, vencida, porVencer;
+
         @Override
-        public String toString(){
-            return switch (this){
+        public String toString() {
+            return switch (this) {
                 case incompleta -> "Incompleta";
                 case completa -> "Completa";
                 case vencida -> "Vencida";
@@ -29,36 +32,50 @@ public class Tarea3 {
 
 
     //CONSTRUCTOR
-    public Tarea3(String titulo,String descripcion, int prioridad,LocalDate fechaRecordatorio ,LocalDate fechalimite){
+    public Tarea3(String titulo, String descripcion, int prioridad, LocalDate fechaRecordatorio, LocalDate fechalimite) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.prioridad = prioridad;
         this.fechaRecordatorio = fechaRecordatorio;
         this.fechaLimite = fechalimite;
+        this.fechaFinalizacion = null;
         //SI NO HAY FECHA LIMITE, LA TAREA ESTA INCOMPLETA
-        if(fechaLimite == null){
+        if (fechaLimite == null) {
             this.estado = Tarea.Estado.incompleta;
             return;
         }
 
         // SI LA FECHA LIMITE YA PASO, LA TAREA ESTA VENCIDA
-        if(fechaLimite.isBefore(LocalDate.now())){
+        if (fechaLimite.isBefore(LocalDate.now())) {
             this.estado = Tarea.Estado.vencida;
         }
 
         // SINO LA FECHA LIMITE TODAVIA NO PASO Y LA TAREA ESTA INCOMPLETA.
-        else{
+        else {
             this.estado = Tarea.Estado.incompleta;
         }
     }
 
-
     //SETTER Y GETTERS.
-    public void setDescripcion(String descripcion){this.descripcion = descripcion;}
-    public String getDescripcion(){return descripcion;}
-    public void setPrioridad(int prioridad) {this.prioridad = prioridad;}
-    public int getPrioridad(){return prioridad;}
-    public Tarea.Estado getEstado(){return this.estado;}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setPrioridad(int prioridad) {
+        this.prioridad = prioridad;
+    }
+
+    public int getPrioridad() {
+        return prioridad;
+    }
+
+    public Tarea.Estado getEstado() {
+        return this.estado;
+    }
     public void setEstado(String estadoStr) {
         // Convierte la cadena a minúsculas
         String estadoLowerCase = estadoStr.toLowerCase();
@@ -80,59 +97,76 @@ public class Tarea3 {
                 throw new IllegalArgumentException("Estado no válido: " + estadoStr);
         }
     }
+
     public String getTitulo() {
         return titulo;
     }
+
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
 
 
     // FUNCIONES
-    public void completarTarea(){
-        if(this.estado == Tarea.Estado.completa){
+    public void completarTarea() {
+        if (this.estado == Tarea.Estado.completa) {
             return;
         }
         this.fechaCompletada = LocalDate.now();
-        if(this.fechaLimite.isBefore(LocalDate.now())){
+        if (this.fechaLimite.isBefore(LocalDate.now())) {
             this.estado = Tarea.Estado.vencida;
             return;
         }
         this.estado = Tarea.Estado.completa;
     }
-    public void tareaInfo(){
+
+    public void tareaInfo() {
+        if (this.fechaFinalizacion != null) {
+            System.out.println("Fecha de finalizacion : " + this.fechaFinalizacion);
+        }
         System.out.println("Tarea: " + getDescripcion() +
                 "\n Titulo: " + getTitulo() +
                 "\n Estado: " + getEstado() +
                 ".\n Prioridad: " + getPrioridad() +
                 ".\n Vencida: " + tareaVencida() +
-                ".\n Fecha de vencimiento: " + (this.fechaLimite == null ? " Sin definir " : this.fechaLimite+"\n")
+                ".\n Fecha de vencimiento: " + (this.fechaLimite == null ? " Sin definir " : this.fechaLimite + "\n")
         );
     }
-    public void mostrarTarea(){
-        System.out.println("Tarea: "+ getEstado() + "| Descripcion: "+ getDescripcion()+"\n");
+
+    public void mostrarTarea() {
+        System.out.println("Tarea: " + getEstado() + "| Descripcion: " + getDescripcion() + "\n");
     }
-    public boolean tareaVencida(){return this.estado == Tarea.Estado.vencida;}
-    public boolean tareaCompleta(){return this.estado == Tarea.Estado.completa;}
+
+    public boolean tareaVencida() {
+        return this.estado == Tarea.Estado.vencida;
+    }
+
+    public boolean tareaCompleta() {
+        return this.estado == Tarea.Estado.completa;
+    }
+
     public LocalDate getFechaLimite() {
         return fechaLimite;
     }
-    public boolean recordatorioActivo(){
-        if(fechaRecordatorio.equals(LocalDate.now())){
+
+    public boolean recordatorioActivo() {
+        if (fechaRecordatorio.equals(LocalDate.now())) {
             return true;
         }
         return fechaRecordatorio.isBefore(LocalDate.now());
     }
-    public void actualizarTareas(){
-        if(this.estado == Tarea.Estado.completa || this.estado == Tarea.Estado.vencida){
+
+    public void actualizarTareas() {
+        if (this.estado == Tarea.Estado.completa || this.estado == Tarea.Estado.vencida) {
             return;
         }
-        if(this.estado == Tarea.Estado.incompleta || this.estado == Tarea.Estado.porVencer){
-            if(recordatorioActivo()){
+        if (this.estado == Tarea.Estado.incompleta || this.estado == Tarea.Estado.porVencer) {
+            if (recordatorioActivo()) {
                 this.estado = Tarea.Estado.porVencer;
                 this.prioridad = 1;
             }
         }
     }
-}
+//ejercicio 13
 
+}

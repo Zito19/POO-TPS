@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Ejecutable {
     public static void main(String[] args) {
         //TAREA POR VENCER
-        AdministradorDeTareas admin = new AdministradorDeTareas();
+        AdministradorDeTareas admin = AdministradorDeTareas.getInstance();
         admin.crearTarea("TAREA1","PRUEBA1",2,
                 LocalDate.of(2023, 9, 7),
                 LocalDate.of(2025, 9, 7));
